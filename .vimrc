@@ -54,6 +54,7 @@ syntax on
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 set number
+set clipboard=unnamed
 let g:solarized_termcolors=256
 set background=dark
 colorscheme solarized
@@ -79,7 +80,6 @@ nnoremap [C gg<c-v>Gld
 nnoremap [s :%s/\/\/.*//g<cr> 
 nnoremap [a i// @audit - 
 inoremap [a // @audit - 
-inoremap [t TODO
 inoremap [p // @param - 
 inoremap [r // @returns - 
 inoremap [m // @modifier - 
