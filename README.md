@@ -1,2 +1,3 @@
-# configurations
-My configuration files for bash, vim, git, etc.
+# Shell Environment
+- config files for my shell environment
+- setup scripts to ease the process of switching to a new machine
