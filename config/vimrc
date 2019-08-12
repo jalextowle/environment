@@ -1,0 +1,72 @@
+set nocompatible
+
+" These settings are required before calling vundle#begin()
+filetype indent off
+filetype plugin off
+filetype plugin indent off
+
+" Setup vundle
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'tomlion/vim-solidity'
+Plugin 'scrooloose/nerdtree'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'https://github.com/rhysd/vim-wasm'
+Plugin 'https://github.com/dense-analysis/ale'
+Plugin 'tpope/vim-fugitive'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+call vundle#end()
+
+" These settings are required after calling vundle#end()
+filetype plugin indent on
+syntax on
+
+set number
+set clipboard=unnamed
+let g:solarized_termcolors=256
+set background=dark
+colorscheme solarized
+set tabstop=4
+set shiftwidth=4
+set autoindent
+set smartindent
+set expandtab
+imap jj <esc>
+"vmap ll <esc>
+nmap <Down> <nop>
+nmap <Up> <nop>
+nmap <Left> <nop>
+nmap <Right> <nop>
+imap <Down> <nop>
+imap <Up> <nop>
+imap <Left> <nop>
+imap <Right> <nop>
+nmap - ddp
+" I should set these key mappings to use a leader key
+nnoremap [c gg<c-v>GI//<esc>
+nnoremap [C gg<c-v>Gld
+nnoremap [s :%s/\/\/.*//g<cr>
+nnoremap [a i// @audit -
+inoremap [a // @audit -
+inoremap [p // @param -
+inoremap [r // @returns -
+inoremap [m // @modifier -
+" nnoremap _  O<esc>kd$jpj0d$kkpjjdd
+let extension = expand('%:e')
+if extension == "cr"
+  set filetype=ruby
+endif
+if extension == "c" || extension == "h"
+  set tabstop=8
+  set shiftwidth=8
+  inoremap [u uint64_t
+endif
+nnoremap [js :set filetype=javascript<cr>
+autocmd FileType vim,typescript,javascript,solidity,rust autocmd BufWritePre <buffer> %s/\s\+$//e
+command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -csw78
+
+" Ale
+let g:ale_fixers = {'typescript': ['prettier', 'tslint']}
+let g:ale_fix_on_save = 1
