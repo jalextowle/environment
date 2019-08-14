@@ -67,6 +67,7 @@ nnoremap [js :set filetype=javascript<cr>
 autocmd FileType vim,typescript,javascript,solidity,rust autocmd BufWritePre <buffer> %s/\s\+$//e
 command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -csw78
 
-" Ale
+" Ale Commands
 let g:ale_fixers = {'typescript': ['prettier', 'tslint']}
 let g:ale_fix_on_save = 1
+nnoremap ;a :ALENext<cr>

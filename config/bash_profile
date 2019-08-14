@@ -23,6 +23,12 @@ function sid() {
     mv temp "$1"
 }
 
+## cd aliases ##
+
+alias ..='cd ../'
+alias ...='cd ../../'
+alias ....='cd ../../../'
+
 ## 0x aliases ##
 
 function yb() {
