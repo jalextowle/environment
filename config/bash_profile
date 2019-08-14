@@ -48,7 +48,7 @@ function ybt() {
 }
 
 function yall() {
-    yb && yt && yl
+    yb && yt && yl && yp
 }
 
 function ybc() {
@@ -72,8 +72,15 @@ function ylc() {
   cd $OLD
 }
 
+function yp() {
+  OLD=$(pwd)
+  cd ~/0x-monorepo-1
+  yarn prettier
+  cd $OLD
+}
+
 function ycall() {
-    ybc && ytc && ylc
+    ybc && ytc && ylc && yp
 }
 
 ## Rust Functions ##
