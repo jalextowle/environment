@@ -17,7 +17,7 @@ alias python=python3
 
 ### Functions and Aliases ###
 
-# A quick and dirty find and replace script on a given file. 
+# A quick and dirty find and replace script on a given file.
 function sid() {
     cat "$1" | sed "s/"$2"/"$3"/g" > temp
     mv temp "$1"
@@ -29,6 +29,29 @@ alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
 
+## filesystem functions ##
+
+### Uses the working directory path to derive the closest parent directory name that matches
+### a regular expression.
+### @param($1): This is the regex that should match the parent
+### @param($2): This is the stop directory. This defaults to the / directory.
+function find_parent_that_matches() {
+    current_dir=$(pwd)
+    match="$1"
+    stop="$2"
+    while [[ $current_dir != $stop ]]; do
+        if [[ $(basename $current_dir) =~ $match ]]; then
+            echo $current_dir
+            break
+        fi
+        current_dir=$(dirname $current_dir)
+    done
+}
+
+## vim aliases ##
+
+alias vimc='vim $CURRENT_FILE'
+
 ## 0x aliases ##
 
 function yb() {
@@ -36,11 +59,11 @@ function yb() {
 }
 
 function yt() {
-    yarn test 
+    yarn test
 }
 
 function yl() {
-    yarn lint 
+    yarn lint
 }
 
 function ybt() {
@@ -48,35 +71,43 @@ function ybt() {
 }
 
 function yall() {
+    yb && yt && yl
+}
+
+function ypall() {
     yb && yt && yl && yp
 }
 
 function ybc() {
-  OLD=$(pwd)
-  cd ~/0x-monorepo-1
+  old=$(pwd)
+  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+  cd $parent
   yarn build:contracts
-  cd $OLD
+  cd $old
 }
 
 function ytc() {
-  OLD=$(pwd)
-  cd ~/0x-monorepo-1
+  old=$(pwd)
+  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+  cd $parent
   yarn test:contracts
-  cd $OLD
+  cd $old
 }
 
 function ylc() {
-  OLD=$(pwd)
-  cd ~/0x-monorepo-1
+  old=$(pwd)
+  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+  cd $parent
   yarn lint:contracts
-  cd $OLD
+  cd $old
 }
 
 function yp() {
-  OLD=$(pwd)
-  cd ~/0x-monorepo-1
+  old=$(pwd)
+  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+  cd $parent
   yarn prettier
-  cd $OLD
+  cd $old
 }
 
 function ycall() {

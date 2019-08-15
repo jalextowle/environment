@@ -64,7 +64,7 @@ if extension == "c" || extension == "h"
   inoremap [u uint64_t
 endif
 nnoremap [js :set filetype=javascript<cr>
-autocmd FileType vim,typescript,javascript,solidity,rust autocmd BufWritePre <buffer> %s/\s\+$//e
+autocmd FileType bash,sh,vim,typescript,javascript,solidity,rust autocmd BufWritePre <buffer> %s/\s\+$//e
 command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -csw78
 
 " Ale Commands
