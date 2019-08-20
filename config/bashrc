@@ -23,11 +23,19 @@ function sid() {
     mv temp "$1"
 }
 
+function beep() {
+    printf "\a"
+}
+
 ## cd aliases ##
 
 alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
+
+function cd0x() {
+    cd $(find_parent_that_matches "^0x-monorepo" $HOME)
+}
 
 ## filesystem functions ##
 
@@ -48,11 +56,44 @@ function find_parent_that_matches() {
     done
 }
 
-## vim aliases ##
+## vim ##
 
 alias vimc='vim $CURRENT_FILE'
 
-## 0x aliases ##
+## git ##
+
+function gc() {
+    git add -A && git commit -m "$1"
+}
+
+function gcm() {
+    git add -A && git commit -m "$1"
+}
+
+function vga() {
+    vim "$1" && git add -A "$1"
+}
+
+## 0x ##
+
+function full_clean() {
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+
+    ## We must use node 10 to install our packages
+    nvm use 10
+
+    cd $parent
+    rm -rf node_modules/
+    yarn
+    yb
+    ybc
+    cd $old
+}
+
+function yc() {
+    yarn clean
+}
 
 function yb() {
     yarn build
@@ -75,39 +116,39 @@ function yall() {
 }
 
 function ypall() {
-    yb && yt && yl && yp
+    ybc && yt && yl && yp
 }
 
 function ybc() {
-  old=$(pwd)
-  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
-  cd $parent
-  yarn build:contracts
-  cd $old
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn build:contracts
+    cd $old
 }
 
 function ytc() {
-  old=$(pwd)
-  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
-  cd $parent
-  yarn test:contracts
-  cd $old
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn test:contracts
+    cd $old
 }
 
 function ylc() {
-  old=$(pwd)
-  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
-  cd $parent
-  yarn lint:contracts
-  cd $old
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn lint:contracts
+    cd $old
 }
 
 function yp() {
-  old=$(pwd)
-  parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
-  cd $parent
-  yarn prettier
-  cd $old
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn prettier
+    cd $old
 }
 
 function ycall() {
