@@ -17,6 +17,9 @@ Plugin 'https://github.com/dense-analysis/ale'
 Plugin 'tpope/vim-fugitive'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plugin 'https://github.com/Quramy/tsuquyomi'
+Plugin 'https://github.com/vim-syntastic/syntastic'
+Plugin 'fatih/vim-go'
 call vundle#end()
 
 " These settings are required after calling vundle#end()
@@ -53,21 +56,59 @@ inoremap [a // @audit -
 inoremap [p // @param -
 inoremap [r // @returns -
 inoremap [m // @modifier -
-" nnoremap _  O<esc>kd$jpj0d$kkpjjdd
+
+set colorcolumn=80
+
 let extension = expand('%:e')
 if extension == "cr"
   set filetype=ruby
 endif
+
 if extension == "c" || extension == "h"
   set tabstop=8
   set shiftwidth=8
   inoremap [u uint64_t
 endif
+
+if extension == 'go'
+  set expandtab!
+  set tabstop=8
+  set shiftwidth=8
+endif
+
 nnoremap [js :set filetype=javascript<cr>
-autocmd FileType bash,sh,vim,typescript,javascript,solidity,rust autocmd BufWritePre <buffer> %s/\s\+$//e
+autocmd FileType bash,sh,vim,typescript,javascript,solidity,rust,go autocmd BufWritePre <buffer> %s/\s\+$//e
 command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -csw78
 
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_typescript_checkers = ['tsuquyomi'] " You shouldn't use 'tsc' checker.
+" let g:tsuquyomi_disable_quickfix = 1
+
 " Ale Commands
-let g:ale_fixers = {'typescript': ['prettier', 'tslint']}
+let g:ale_linters = {
+    \ 'go': ['gofmt'],
+    \ 'typescript': ['tslint']
+    \ }
+let g:ale_fixers = {
+    \ 'go': ['gofmt'],
+    \ 'typescript': ['prettier']
+    \ }
 let g:ale_fix_on_save = 1
 nnoremap ;a :ALENext<cr>
+nnoremap ;b :ALELast<cr>
+autocmd bufwritepost .vimrc source ~/.vimrc
+
+" vim-go
+if extension == 'go'
+    noremap [d :GoDef<cr>
+    noremap [l :GoDefPop<cr>
+endif
+
+" tsuquyomi
+if extension == 'ts'
+    noremap [d :TsuDef<cr>
+    noremap [l <c-t>
+    inoremap <c-n> <c-x><c-o>
+    inoremap <c-p> <c-x><c-o>
+endif
