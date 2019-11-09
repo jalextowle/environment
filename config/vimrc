@@ -37,7 +37,6 @@ set autoindent
 set smartindent
 set expandtab
 imap jj <esc>
-"vmap ll <esc>
 nmap <Down> <nop>
 nmap <Up> <nop>
 nmap <Left> <nop>
@@ -47,15 +46,10 @@ imap <Up> <nop>
 imap <Left> <nop>
 imap <Right> <nop>
 nmap - ddp
-" I should set these key mappings to use a leader key
+
 nnoremap [c gg<c-v>GI//<esc>
 nnoremap [C gg<c-v>Gld
 nnoremap [s :%s/\/\/.*//g<cr>
-nnoremap [a i// @audit -
-inoremap [a // @audit -
-inoremap [p // @param -
-inoremap [r // @returns -
-inoremap [m // @modifier -
 
 set colorcolumn=80
 
@@ -83,7 +77,6 @@ command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -cs
 " Syntastic
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_typescript_checkers = ['tsuquyomi'] " You shouldn't use 'tsc' checker.
-" let g:tsuquyomi_disable_quickfix = 1
 
 " Ale Commands
 let g:ale_linters = {
@@ -98,12 +91,6 @@ let g:ale_fix_on_save = 1
 nnoremap ;a :ALENext<cr>
 nnoremap ;b :ALELast<cr>
 autocmd bufwritepost .vimrc source ~/.vimrc
-
-" vim-go
-if extension == 'go'
-    noremap [d :GoDef<cr>
-    noremap [l :GoDefPop<cr>
-endif
 
 " tsuquyomi
 if extension == 'ts'
