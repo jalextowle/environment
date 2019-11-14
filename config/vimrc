@@ -20,6 +20,8 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'https://github.com/Quramy/tsuquyomi'
 Plugin 'https://github.com/vim-syntastic/syntastic'
 Plugin 'fatih/vim-go'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 call vundle#end()
 
 " These settings are required after calling vundle#end()
@@ -99,3 +101,10 @@ if extension == 'ts'
     inoremap <c-n> <c-x><c-o>
     inoremap <c-p> <c-x><c-o>
 endif
+
+" Automatically open NERDTree upon entering vim
+augroup enter
+    autocmd!
+    autocmd vimenter * NERDTree
+    autocmd vimenter * wincmd l
+augroup END
