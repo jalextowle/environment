@@ -1,0 +1,215 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+PS1='[\u@\h \W]\$ '
+
+# Setting PATH for Python 3.6
+# The original version is saved in .bash_profile.pysave
+export PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
+
+# Add rust binary files to the path variable
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Setup Go environment variables, and add go's bin to PATH
+export GOPATH="$HOME/go";
+export GOROOT="$HOME/.go";
+export PATH="$GOPATH/bin:$PATH";
+
+# Add this to your ~/.bash_profile file:
+export NODE_PATH="/usr/local/lib/node_modules"
+
+### Alias python2 to python3
+alias python=python3
+
+### Functions and Aliases ###
+
+# Source this file.
+alias src="source ~/.bash_profile"
+
+# A quick and dirty find and replace script on a given file.
+function sid() {
+    cat "$1" | sed "s/"$2"/"$3"/g" > temp
+    mv temp "$1"
+}
+
+function beep() {
+    printf "\a"
+}
+
+## emacs aliases ##
+
+alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+
+## cd aliases ##
+
+alias ..='cd ../'
+alias ...='cd ../../'
+alias ....='cd ../../../'
+
+## docker aliases ##
+
+alias gnch='docker pull 0xorg/ganache-cli; docker run -ti -p 8545:8545 0xorg/ganache-cli'
+
+## git aliases ##
+
+alias gl='git log'
+alias gs='git status'
+alias ga='git add'
+alias gall='git add -A'
+alias gcm='git commit -m'
+alias gca='git commit --amend'
+alias gp='git push origin HEAD'
+alias grd='git fetch origin; git rebase origin/development'
+alias gdv='git checkout development'
+
+## filesystem functions ##
+
+### Uses the working directory path to derive the closest parent directory name that matches
+### a regular expression.
+### @param($1): This is the regex that should match the parent
+### @param($2): This is the stop directory. This defaults to the / directory.
+function find_parent_that_matches() {
+    current_dir=$(pwd)
+    match="$1"
+    stop="$2"
+    while [[ $current_dir != $stop ]]; do
+        if [[ $(basename $current_dir) =~ $match ]]; then
+            echo $current_dir
+            break
+        fi
+        current_dir=$(dirname $current_dir)
+    done
+}
+
+## vim ##
+
+alias vimc='vim $CURRENT_FILE'
+
+## git ##
+
+function gc() {
+    git add -A && git commit -m "$1"
+}
+
+function gcm() {
+    git add -A && git commit -m "$1"
+}
+
+function vga() {
+    vim "$1" && git add -A "$1"
+}
+
+## 0x Monorepo ##
+
+MAIN_BRANCH=3.0
+
+alias yc="yarn clean"
+alias yb="yarn build"
+alias yt="yarn test"
+alias yl="yarn lint"
+alias ybt="yb && yt"
+alias yall="yb && yt && yl"
+
+function ybc() {
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn build:contracts
+    cd $old
+}
+
+function ytc() {
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn test:contracts
+    cd $old
+}
+
+function ylc() {
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn lint:contracts
+    cd $old
+}
+
+function yp() {
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    yarn prettier
+    cd $old
+}
+
+function ycall() {
+    ybc && ytc && ylc && yp
+}
+
+function refresh() {
+    old=$(pwd)
+    parent=$(find_parent_that_matches "^0x-monorepo" $HOME)
+    cd $parent
+    git checkout $MAIN_BRANCH
+    git pull origin $MAIN_BRANCH
+    yarn clean
+    yarn
+    yb
+    ybc
+    cd $old
+}
+
+## 0x Mesh ##
+
+alias mm='make mesh'
+alias mt='make test-all'
+alias cr='make cut-release'
+
+## Rust Functions ##
+
+function cb() {
+    cargo build
+}
+
+function cc() {
+    cargo check
+}
+
+function ct() {
+    cargo test
+}
+
+function cbt() {
+    cargo build && cargo test
+}
+
+## Setup for the "Node Version Manager" ##
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm use 11
+
+## Enable Bash Powerline ##
+powerline-daemon -q
+POWERLINE_BASH_CONTINUATION=1
+POWERLINE_BASH_SELECT=1
+. /usr/share/powerline/bindings/bash/powerline.sh
+
+## Enable git completion for bash ##
+source /usr/share/git/completion/git-completion.bash
+
+## Changes made for 0x-mesh ##
+
+# Increase number of open files that are tolerated
+ulimit -S -n 4096
+
+# Bash autocompletion for Makefile
+complete -W "\`grep -oE '^[a-zA-Z0-9_.-]+:([^=]|$)' ?akefile | sed 's/[^a-zA-Z0-9_.-]*$//'\`" make
+
+# Add Wabt tools to path
+PATH="$PATH":$HOME/wabt/bin

@@ -1,0 +1,123 @@
+set nocompatible
+
+" These settings are required before calling vundle#begin()
+filetype indent off
+filetype plugin off
+filetype plugin indent off
+
+" Setup vundle
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+    Plugin 'VundleVim/Vundle.vim'
+    Plugin 'tomlion/vim-solidity'
+    Plugin 'scrooloose/nerdtree'
+    Plugin 'tpope/vim-fugitive'
+    Plugin 'leafgarland/typescript-vim'
+    Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+    Plugin 'fatih/vim-go'
+    Plugin 'vim-airline/vim-airline'
+    Plugin 'vim-airline/vim-airline-themes'
+    Plugin 'rust-lang/rust.vim'
+    Plugin 'racer-rust/vim-racer'
+
+    Plugin 'https://github.com/rhysd/vim-wasm'
+    Plugin 'https://github.com/dense-analysis/ale'
+    Plugin 'https://github.com/Quramy/tsuquyomi'
+    Plugin 'https://github.com/vim-syntastic/syntastic'
+call vundle#end()
+
+" These settings are required after calling vundle#end()
+filetype plugin indent on
+syntax on
+
+set number
+
+let g:solarized_termcolors=256
+
+set clipboard=unnamed
+set background=dark
+
+" In languages where it is appropriate, expand tabs so that indentation is
+" rendered consistently across all UIs.
+set expandtab
+
+" Render tabs to be 4 spaces (unless conditionally overrided).
+set tabstop=4
+set shiftwidth=4
+
+set autoindent
+set smartindent
+
+" The arrow-keys are not allowed for movement in any mode.
+noremap <Down> <nop>
+noremap <Up> <nop>
+noremap <Left> <nop>
+noremap <Right> <nop>
+
+imap jj <esc>
+
+nnoremap [c gg<c-v>GI//<esc>
+nnoremap [C gg<c-v>Gld
+nnoremap [s :%s/\/\/.*//g<cr>
+
+" Discolor the
+set colorcolumn=81
+
+let extension = expand('%:e')
+
+if extension == "cr"
+    set filetype=ruby
+endif
+
+if extension == "c" || extension == "h"
+    set tabstop=8
+    set shiftwidth=8
+    inoremap [u uint64_t
+endif
+
+if extension == 'go'
+    set expandtab!
+    set tabstop=8
+    set shiftwidth=8
+
+    " Macros for Go autocomplete
+    inoremap <c-n> <c-x><c-o>
+    inoremap <c-p> <c-x><c-o>
+endif
+
+" tsuquyomi
+if extension == 'ts'
+    inoremap <c-n> <c-x><c-o>
+    inoremap <c-p> <c-x><c-o>
+endif
+
+autocmd FileType bash,sh,vim,typescript,javascript,solidity,rust,go,markdown autocmd BufWritePre <buffer> %s/\s\+$//e
+command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -csw78
+
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_typescript_checkers = ['tsuquyomi']
+
+" Ale Commands
+let g:ale_linters = {
+    \ 'go': ['gofmt'],
+    \ 'typescript': ['tslint']
+    \ }
+let g:ale_fixers = {
+    \ 'go': ['gofmt'],
+    \ 'typescript': ['prettier']
+    \ }
+let g:ale_fix_on_save = 1
+
+map <C-n> :cn<CR>
+map <C-m> :cp<CR>
+
+nnoremap ;a :ALENext<cr>
+nnoremap ;b :ALELast<cr>
+
+" Automatically source '~/.vimrc' whenever '~/.vimrc' is written to. This
+" allows automagic updates whenever the config file is updated.
+autocmd BufWritePost .vimrc source ~/.vimrc
+
+" Force save current buffer - works for readonly
+cnoremap sudow w !sudo tee % >/dev/null
