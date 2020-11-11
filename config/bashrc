@@ -18,6 +18,8 @@ alias python=python3
 
 ### Functions and Aliases ###
 
+alias serve='python3 -m http.server $1'
+
 # Source this file.
 alias src="source ~/.bash_profile"
 
@@ -43,12 +45,17 @@ alias ....='cd ../../../'
 
 ## docker aliases ##
 
-alias gnch='docker pull 0xorg/ganache-cli; docker run -ti -p 8545:8545 0xorg/ganache-cli'
+alias ds='docker ps'
+alias dk='docker kill $(docker ps -q)'
 
 ## git aliases ##
 
+alias whichbranch='git branch -a --contains $1'
+
 alias gl='git log'
 alias gs='git status'
+alias gd='git diff HEAD'
+
 alias ga='git add'
 alias gall='git add -A'
 alias gcm='git commit -m'
@@ -156,9 +163,15 @@ function refresh() {
 
 ## 0x Mesh ##
 
+alias m="VERBOSITY=5 ETHEREUM_RPC_URL=https://mainnet.infura.io/v3/f9686e8c08a844a29e6bb0cdea7c1411 ETHEREUM_CHAIN_ID=1 mesh | grep --line-buffered -E '^{' | while read -r LINE; do echo -E "$LINE" | jq -r '.timestamp + "\t" + .level + "\t" + .message'; done"
 alias mm='make mesh'
 alias mt='make test-all'
 alias cr='make cut-release'
+
+## 0x API ##
+
+alias pg_start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg_stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
 
 ## Rust Functions ##
 
@@ -182,7 +195,7 @@ function cbt() {
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-nvm use 11
+nvm use 10
 
 ## Enable Bash Powerline ##
 source ~/.bash-powerline.sh
@@ -196,11 +209,19 @@ source ~/.bash-powerline.sh
 
 ## Changes made for 0x-mesh ##
 
+alias fmt="gofmt -s "$1" > .fmt.temp; mv .fmt.temp "$1""
+
 # Increase number of open files that are tolerated
 ulimit -S -n 4096
 
-# Bash autocompletion for Makefile
-complete -W "\`grep -oE '^[a-zA-Z0-9_.-]+:([^=]|$)' ?akefile | sed 's/[^a-zA-Z0-9_.-]*$//'\`" make
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
 # Add Wabt tools to path
 PATH="$PATH":$HOME/wabt/bin
+
+export GOPATH="$HOME/go"; export GOROOT="$HOME/.go"; export PATH="$GOPATH/bin:$PATH"; # g-install: do NOT edit, see https://github.com/stefanmaric/g
+
+complete -C /Users/alextowle/go/bin/gocomplete go
+
+# Bash autocompletion for Makefile
+complete -W "\`grep -oE '^[a-zA-Z0-9_.-]+:([^=]|$)' ?akefile | sed 's/[^a-zA-Z0-9_.-]*$//'\`" make
