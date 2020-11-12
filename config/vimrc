@@ -107,7 +107,22 @@ if extension == 'ts'
     inoremap <c-p> <c-x><c-o>
 endif
 
-autocmd FileType graphql,lisp,bash,sh,vim,typescript,javascript,solidity,rust,go,markdown autocmd BufWritePre <buffer> %s/\s\+$//e
+" Remove whitespace on save in these filetypes
+autocmd FileType
+            \ graphql,
+            \lisp,
+            \bash,
+            \sh,
+            \vim,
+            \typescript,
+            \javascript,
+            \solidity,
+            \rust,
+            \go,
+            \markdown,
+            \yaml
+            \ autocmd BufWritePre <buffer> %s/\s\+$//e
+
 command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -csw78
 
 " Syntastic
