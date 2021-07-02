@@ -1,0 +1,9 @@
+{
+  "coc.preferences.formatOnSaveFiletypes": [
+    "javascript",
+    "json",
+    "rust",
+    "typescript"
+  ],
+  "eslint.autoFixOnSave": true
+}

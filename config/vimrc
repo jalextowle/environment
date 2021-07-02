@@ -17,27 +17,12 @@ call vundle#begin()
     " LSP
     Plugin 'neoclide/coc.nvim'
 
-    " Typescript
-    Plugin 'pangloss/vim-javascript'    " JavaScript support
-    Plugin 'leafgarland/typescript-vim' " TypeScript syntax
-    Plugin 'maxmellon/vim-jsx-pretty'   " JS and JSX syntax
-    Plugin 'jparise/vim-graphql'        " GraphQL syntax
-
-    Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-    Plugin 'fatih/vim-go'
     Plugin 'vim-airline/vim-airline'
     Plugin 'vim-airline/vim-airline-themes'
-    Plugin 'rust-lang/rust.vim'
-    Plugin 'racer-rust/vim-racer'
-
-    Plugin 'https://github.com/rhysd/vim-wasm'
-    Plugin 'https://github.com/dense-analysis/ale'
-    Plugin 'https://github.com/vim-syntastic/syntastic'
-
-    Plugin 'vimwiki/vimwiki'
 call vundle#end()
 
 " These settings are required after calling vundle#end()
+filetype on
 filetype plugin indent on
 syntax on
 
@@ -46,8 +31,8 @@ set number
 colorscheme solarized
 let g:solarized_termcolors=256
 
-set clipboard=unnamed
-set background=dark
+set clipboard=unnamedplus
+set background=light
 
 " In languages where it is appropriate, expand tabs so that indentation is
 " rendered consistently across all UIs.
@@ -81,6 +66,7 @@ if extension == "yul"
     set filetype=solidity
 endif
 
+
 if extension == "cr"
     set filetype=ruby
 endif
@@ -106,6 +92,8 @@ if extension == 'ts'
     inoremap <c-n> <c-x><c-o>
     inoremap <c-p> <c-x><c-o>
 endif
+
+autocmd BufNewFile,BufRead *.sol set filetype=solidity
 
 " Remove whitespace on save in these filetypes
 autocmd FileType
