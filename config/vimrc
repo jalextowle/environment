@@ -14,8 +14,13 @@ call vundle#begin()
     Plugin 'altercation/vim-colors-solarized'
     Plugin 'tpope/vim-fugitive'
 
+    " Typescript
+    Plugin 'pangloss/vim-javascript'    " JavaScript support
+    Plugin 'leafgarland/typescript-vim' " TypeScript syntax
+    Plugin 'maxmellon/vim-jsx-pretty'   " JS and JSX syntax
+
     " LSP
-    Plugin 'neoclide/coc.nvim'
+    Plugin 'neoclide/coc.nvim', { 'branch': 'release' }
 
     Plugin 'vim-airline/vim-airline'
     Plugin 'vim-airline/vim-airline-themes'
@@ -31,8 +36,11 @@ set number
 colorscheme solarized
 let g:solarized_termcolors=256
 
+" Allow for enough time to redraw the syntax highlighting after a big jump.
+set redrawtime=10000
+
 set clipboard=unnamedplus
-set background=light
+set background=dark
 
 " In languages where it is appropriate, expand tabs so that indentation is
 " rendered consistently across all UIs.
@@ -44,6 +52,9 @@ set shiftwidth=4
 
 set autoindent
 set smartindent
+
+" Allow emacs style <C-a> to beginning of line in command mode.
+cnoremap <C-a> <C-b>
 
 " The arrow-keys are not allowed for movement in any mode.
 noremap <Down> <nop>
@@ -93,11 +104,13 @@ if extension == 'ts'
     inoremap <c-p> <c-x><c-o>
 endif
 
+autocmd FileType python let b:coc_root_patterns = ['.git']
 autocmd BufNewFile,BufRead *.sol set filetype=solidity
 
 " Remove whitespace on save in these filetypes
 autocmd FileType
-            \ graphql,
+            \ asm,
+            \graphql,
             \lisp,
             \bash,
             \sh,
@@ -208,8 +221,10 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nmap <silent> [g <Plug>(coc-diagnostic-prev-error)
+nmap <silent> ]g <Plug>(coc-diagnostic-next-error)
+nmap <silent> [[g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]]g <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)

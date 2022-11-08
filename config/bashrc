@@ -121,8 +121,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Aliases
-alias cat='bat'
-alias ddx='cd ~/programming/dexlabs/derivadex'
 alias ds='docker ps'
 alias gl='git log'
 alias gd='git diff HEAD'
@@ -136,8 +134,54 @@ alias yp='yarn prettier'
 alias yr='yarn rebuild'
 alias tmux="TERM=screen-256color-bce tmux"
 
-# Use node 12
-nvm use 12
+function ddx() {
+    if [[ -z "$1" ]]
+    then
+        cd "/home/alex/programming/dexlabs/derivadex"
+    else
+        cd "/home/alex/programming/dexlabs/derivadex_$1"
+    fi
+}
+
+function ddxm() {
+    if [[ -z "$1" ]]
+    then
+        cd "/home/alex/programming/dexlabs/derivadex-mirror"
+    else
+        cd "/home/alex/programming/dexlabs/derivadex_$1-mirror"
+    fi
+}
+
+# alacritty color change
+function ac() {
+    if [[ -z "$1" ]]
+    then
+        cat ~/alacritty/base.yml > ~/.config/alacritty/alacritty.yml
+    else
+        cat ~/alacritty/base.yml ~/alacritty/"$1".yml > ~/.config/alacritty/alacritty.yml
+    fi
+}
+
+# Use node 14
+nvm use 14
+
+# Git tools
+
+# Opens a file for editing and prompts the user about whether it should be
+# added to the git staging environment.
+vimadd() {
+    vim "$1"
+    read -p "Add the file to the staging environment - (Y/n)? " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        git add "$1"
+        echo "\""$1"\" added to staging environment."
+    else
+        echo "\""$1"\" not added to staging environment."
+    fi
+}
+
+alias va='vimadd'
 
 # Starship Initialization
 eval "$(starship init bash)"
@@ -145,3 +189,25 @@ eval "$(starship init bash)"
 # Bash autocompletion
 source /usr/share/bash-completion/completions/git
 complete -W "\`grep -oE '^[a-zA-Z0-9_.-]+:([^=]|$)' ?akefile | sed 's/[^a-zA-Z0-9_.-]*$//'\`" make
+
+# Python path configuration
+export PYTHONPATH="${PYTHONPATH}:/home/alex/programming/dexlabs/derivadex/rust-packages/python-tooling:/home/alex/programming/dexlabs/derivadex_1/rust-packages/python-tooling"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/alex/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/alex/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/alex/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/alex/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+export PATH=$PATH:$HOME/bin
+
+export PATH="$PATH:/home/alex/.foundry/bin"
