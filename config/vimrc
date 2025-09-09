@@ -14,11 +14,6 @@ call vundle#begin()
     Plugin 'altercation/vim-colors-solarized'
     Plugin 'tpope/vim-fugitive'
 
-    " Typescript
-    Plugin 'pangloss/vim-javascript'    " JavaScript support
-    Plugin 'leafgarland/typescript-vim' " TypeScript syntax
-    Plugin 'maxmellon/vim-jsx-pretty'   " JS and JSX syntax
-
     " LSP
     Plugin 'neoclide/coc.nvim', { 'branch': 'release' }
 
@@ -31,6 +26,7 @@ filetype on
 filetype plugin indent on
 syntax on
 
+set mouse=
 set number
 
 colorscheme solarized
@@ -39,7 +35,7 @@ let g:solarized_termcolors=256
 " Allow for enough time to redraw the syntax highlighting after a big jump.
 set redrawtime=10000
 
-set clipboard=unnamedplus
+set clipboard=unnamed
 set background=dark
 
 " In languages where it is appropriate, expand tabs so that indentation is
@@ -67,6 +63,10 @@ imap jj <esc>
 nnoremap [c gg<c-v>GI//<esc>
 nnoremap [C gg<c-v>Gld
 nnoremap [s :%s/\/\/.*//g<cr>
+
+" OpenAI Codex
+nnoremap  \\c :CreateCompletion<CR>
+inoremap  \\c <Esc>li<C-g>u<Esc>l:CreateCompletion<CR>
 
 " Discolor the
 set colorcolumn=81
@@ -104,7 +104,7 @@ if extension == 'ts'
     inoremap <c-p> <c-x><c-o>
 endif
 
-autocmd FileType python let b:coc_root_patterns = ['.git']
+autocmd FileType python let b:coc_root_patterns = ['.git', '.env', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyproject.toml', 'pyrightconfig.json']
 autocmd BufNewFile,BufRead *.sol set filetype=solidity
 
 " Remove whitespace on save in these filetypes
@@ -117,8 +117,10 @@ autocmd FileType
             \vim,
             \typescript,
             \javascript,
+            \python,
             \solidity,
             \rust,
+            \docker,
             \go,
             \markdown,
             \yaml
@@ -130,16 +132,6 @@ command! -complete=file -nargs=1 Rpdf :r !pdftotext -nopgbrk <q-args> - |fmt -cs
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_typescript_checkers = ['tsuquyomi']
 
-" Ale Commands
-let g:ale_linters = {
-    \ 'go': ['gofmt'],
-    \ 'typescript': ['tslint']
-    \ }
-let g:ale_fixers = {
-    \ 'go': ['gofmt'],
-    \ 'typescript': ['prettier']
-    \ }
-let g:ale_fix_on_save = 1
 let NERDTreeShowHidden=1
 
 map <C-n> :cn<CR>
@@ -194,15 +186,17 @@ else
 endif
 
 " Use tab for trigger completion with characters ahead and navigate.
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
@@ -334,3 +328,5 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+xnoremap <Leader>p c<C-R>=trim(system("python3 -c ".shellescape("print(".@".")")))<CR><Esc>
